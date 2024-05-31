@@ -3,7 +3,7 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage2
 import logging
 
 logging.basicConfig(level=logging.INFO)
-API_TOKEN = "6675833746:AAHGIwdOxGQwvuM3EsGZG4Zjz1EMVJphre8"
+API_TOKEN = "6675833746:AAHEUyvx2122i-3UPpz2LahNSO13u0VhNCY"
 bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = RedisStorage2(host='localhost', port=6379)  # Adjust host and port according to your Redis setup
 dp = Dispatcher(bot, storage=storage)
@@ -16,7 +16,7 @@ from admin_page import *
 import backend
 from kb import *
 
-ADMINS = [880448541]
+ADMINS = [315035508]
 STATUS_SERVER = False
 
 
@@ -51,31 +51,34 @@ async def start_command(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=StudentAnswer.faculty)
 async def faculty_handler(message: types.Message, state: FSMContext):
+    print(STATUS_SERVER)
     data = await state.get_data()
     faculty = message.text
+    if STATUS_SERVER:
+        if faculty in data['faculty_list_check']:
+            await state.update_data(faculty=faculty)
 
-    if faculty in data['faculty_list_check']:
-        await state.update_data(faculty=faculty)
+            departments = backend.get_kafedra(faculty)
 
-        departments = backend.get_kafedra(faculty)
+            await state.update_data(department_list_check=departments)
 
-        await state.update_data(department_list_check=departments)
+            departments_buttons = get_keyboard(departments)
 
-        departments_buttons = get_keyboard(departments)
+            await message.answer("Kafedrani tanlang ✨", reply_markup=departments_buttons)
+            await StudentAnswer.department.set()
 
-        await message.answer("Kafedrani tanlang ✨", reply_markup=departments_buttons)
-        await StudentAnswer.department.set()
-
+        else:
+            await message.answer("To'g'ri fakultetni tanlang ❌")
+            await StudentAnswer.faculty.set()
     else:
-        await message.answer("To'g'ri fakultetni tanlang ❌")
-        await StudentAnswer.faculty.set()
-
+        await message.answer("Bot faollashtirilmagan!")
+        await state.finish()
 
 @dp.message_handler(state=StudentAnswer.department)
 async def faculty_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
     department = message.text
-    if department in data['kafeda_list_check']:
+    if department in data['department_list_check']:
 
         await state.update_data(kafedra=department)
         teachers = backend.get_teachers(department)
@@ -221,7 +224,7 @@ async def on_startup_notify(dp: Dispatcher):
     for admin in ADMINS:
         try:
             await dp.bot.send_message(admin,
-                                      "🤖 Bot qayta ishga tushdi! 🎉\n🔗 <a href='http://127.0.0.1:8000/OzMUtizimi/'>Bot Admin Saxifasi</a> 🛠️",
+                                      "🤖 Bot qayta ishga tushdi! 🎉\n🔗 <a href='http://survey.nuu.uz/OzMUtizimi/'>Bot Admin Saxifasi</a> 🛠️",
                                       parse_mode="HTML", reply_markup=keyboard_back)
         except Exception as err:
             logging.exception(err)

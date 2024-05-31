@@ -92,7 +92,7 @@ async def faculty_handler(message: types.Message, state: FSMContext):
                 import ananylize_survey
                 ananylize_survey.generate_excel(results)
 
-                folder_path = "./bot/files/"
+                folder_path = "/var/www/Milliy/bot/files"
                 for file_name in os.listdir(folder_path):
                     file_path = os.path.join(folder_path, file_name)
                     if os.path.isfile(file_path):
@@ -132,7 +132,7 @@ async def department_handler(message: types.Message, state: FSMContext):
             time.sleep(2)
             await message.answer("Taxlil natijalari 📝 ", reply_markup=keyboard_back)
 
-            folder_path = "./bot/files/"
+            folder_path = "/var/www/Milliy/bot/files"
             for file_name in os.listdir(folder_path):
                 file_path = os.path.join(folder_path, file_name)
                 if os.path.isfile(file_path):

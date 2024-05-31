@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
@@ -24,9 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k8ov#ub_r9z&u9jqiauz@0)k8267kv25q!&fiwsj+kgc713lg+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', "localhost"]
+
 
 
 # Application definition
@@ -124,12 +126,29 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+######## DEPLOY ###########
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+# CSRF_TRUSTED_ORIGINS = ['https://ejournal.uzbmb.uz']
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# SESSION_COOKIE_NAME = 'sessionid'
+# SESSION_COOKIE_SECURE = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_SAVE_EVERY_REQUEST = True
+# SESSION_COOKIE_AGE = 3600
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_COOKIE_DOMAIN = 'ejournal.uzbmb.uz'
+
